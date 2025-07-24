@@ -1,5 +1,7 @@
--- Merhub Pro (MERBETTER) - Full Script with Free/Paid, Key Prompt "mer" or "merlok"
+-- MERBETTER Full Script for Football Fusion (Roblox)
 -- Features: FFlag system, ESP, Anti-ban, Save System, Draggable Tab GUI, Purple/Black theme
+-- Key Prompt: "mer" or "merlok"
+-- Author: mer
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -12,7 +14,7 @@ local playerGui = localPlayer:WaitForChild("PlayerGui")
 local character = localPlayer.Character or localPlayer.CharacterAdded:Wait()
 local hrp = character:WaitForChild("HumanoidRootPart")
 
--- Configuration
+-- Configuration with default values
 local config = {
     pullVectorStrength = 20,
     pullVectorActive = true,
@@ -30,27 +32,28 @@ local config = {
     espEnemyColor = Color3.fromRGB(255, 0, 0),
 
     theme = {
-        background = Color3.fromRGB(30,30,30),
-        accent = Color3.fromRGB(128,0,255),
-        text = Color3.fromRGB(255,255,255),
+        background = Color3.fromRGB(30, 30, 30),
+        accent = Color3.fromRGB(128, 0, 255),
+        text = Color3.fromRGB(255, 255, 255),
         toggleOn = Color3.fromRGB(0, 200, 150),
         toggleOff = Color3.fromRGB(120, 120, 120),
     }
 }
 
-local savesFilename = "MerhubFF2Config_"..localPlayer.UserId..".json"
+local savesFilename = "MerhubFF2Config_" .. localPlayer.UserId .. ".json"
 
--- Save/Load Settings
+-- Save settings to file
 local function saveSettings()
     local success, err = pcall(function()
         local json = HttpService:JSONEncode(config)
         writefile(savesFilename, json)
     end)
     if not success then
-        warn("Merhub save failed: "..tostring(err))
+        warn("Merhub save failed: " .. tostring(err))
     end
 end
 
+-- Load settings from file
 local function loadSettings()
     if isfile and isfile(savesFilename) then
         local success, data = pcall(function()
@@ -61,7 +64,7 @@ local function loadSettings()
                 return HttpService:JSONDecode(data)
             end)
             if ok and decoded then
-                for k,v in pairs(decoded) do
+                for k, v in pairs(decoded) do
                     config[k] = v
                 end
             end
@@ -73,7 +76,7 @@ loadSettings()
 
 -- Anti-Ban Utilities
 local function randomDelay(min, max)
-    local waitTime = min + math.random()*(max - min)
+    local waitTime = min + math.random() * (max - min)
     task.wait(waitTime)
 end
 
@@ -254,8 +257,7 @@ if not isPaidUser then
     keyEvent:Wait()
 end
 
--- Now start main hub GUI and logic
-
+-- Main Hub GUI
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "MERBETTER_FFlag_GUI"
 ScreenGui.Parent = playerGui
@@ -287,7 +289,7 @@ local pages = {}
 local function createTabButton(text, index)
     local btn = Instance.new("TextButton")
     btn.Size = UDim2.new(0, 90, 0, 30)
-    btn.Position = UDim2.new(0, (index-1)*95 + 5, 0, 35)
+    btn.Position = UDim2.new(0, (index - 1) * 95 + 5, 0, 35)
     btn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
     btn.TextColor3 = config.theme.text
     btn.Text = text
@@ -334,7 +336,7 @@ local magnetLabel = Instance.new("TextLabel")
 magnetLabel.Size = UDim2.new(1, -20, 0, 20)
 magnetLabel.Position = UDim2.new(0, 10, 0, 0)
 magnetLabel.BackgroundTransparency = 1
-magnetLabel.Text = "Magnet Strength: "..config.pullVectorStrength
+magnetLabel.Text = "Magnet Strength: " .. config.pullVectorStrength
 magnetLabel.TextColor3 = config.theme.text
 magnetLabel.Font = Enum.Font.Gotham
 magnetLabel.TextSize = 16
@@ -349,13 +351,13 @@ magnetSlider.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
 magnetSlider.Parent = FFlagPage
 
 local magnetFill = Instance.new("Frame")
-magnetFill.Size = UDim2.new(config.pullVectorStrength/50, 0, 1, 0) -- Max 50
+magnetFill.Size = UDim2.new(config.pullVectorStrength / 50, 0, 1, 0) -- Max 50
 magnetFill.BackgroundColor3 = config.theme.accent
 magnetFill.Parent = magnetSlider
 
 local dragHandle = Instance.new("Frame")
 dragHandle.Size = UDim2.new(0, 15, 1, 0)
-dragHandle.Position = UDim2.new(config.pullVectorStrength/50 - 0.03, 0, 0, 0)
+dragHandle.Position = UDim2.new(config.pullVectorStrength / 50 - 0.03, 0, 0, 0)
 dragHandle.BackgroundColor3 = config.theme.accent
 dragHandle.Parent = magnetSlider
 dragHandle.Cursor = "PointingHand"
@@ -384,7 +386,7 @@ UserInputService.InputChanged:Connect(function(input)
         config.pullVectorStrength = newStrength
         magnetFill.Size = UDim2.new(percent, 0, 1, 0)
         dragHandle.Position = UDim2.new(percent - 0.03, 0, 0, 0)
-        magnetLabel.Text = "Magnet Strength: "..newStrength
+        magnetLabel.Text = "Magnet Strength: " .. newStrength
         saveSettings()
     end
 end)
@@ -408,7 +410,7 @@ qbAimbotToggle.MouseButton1Click:Connect(function()
     qbAimbotEnabled = not qbAimbotEnabled
     qbLockedTarget = nil
     qbAimbotLocked = false
-    qbAimbotToggle.Text = "Toggle QB Aimbot ("..(qbAimbotEnabled and "ON" or "OFF")..")"
+    qbAimbotToggle.Text = "Toggle QB Aimbot (" .. (qbAimbotEnabled and "ON" or "OFF") .. ")"
     saveSettings()
 end)
 
@@ -444,16 +446,6 @@ qbLockBtn.MouseButton1Click:Connect(function()
         if closestPlayer then
             qbLockedTarget = closestPlayer
             qbAimbotLocked = true
-            qbLockBtn.Text = "Unlocked from "..closestPlayer.Name.." (Click to Unlock)"
+            qbLockBtn.Text = "Unlocked from " .. closestPlayer.Name .. " (Click to Unlock)"
         else
             qbLockBtn.Text = "No Teammates Found"
-            task.delay(1, function()
-                qbLockBtn.Text = "Lock QB Aimbot to Nearest"
-            end)
-        end
-    end
-    saveSettings()
-end)
-
--- Ball Path Visualizer Toggle Button
-local ballPathToggleBtn = Instance.new
